@@ -19,7 +19,7 @@ export default function AppointmentScreen({ navigation }) {
     };
     const userData = useSelector(state => state.user.userData);
 
-    const { data, loading, error, reFetch } = useFetch('http://13.53.188.158:4000/api/appointments/patient/' + userData?.id);
+    const { data, loading, error, reFetch } = useFetch('https://backend-ir87-mdebvdafa-uzairghaffar1144.vercel.app/api/appointments/patient/' + userData?.id);
 
     const [activetab, setactivetab] = useState('Upcoming');
     const [fetchCount, setFetchCount] = useState(0);
@@ -55,7 +55,7 @@ export default function AppointmentScreen({ navigation }) {
                     Appointments
                 </Text>
 
-                <Image source={require("../assets/blankPic.png")} style={{ height: 50, width: 50, borderRadius: 50, marginLeft: 50 }}></Image>
+
             </View>
 
             <View style={{ marginTop: 40, flexDirection: 'row', marginBottom: 10 }}>
@@ -68,9 +68,10 @@ export default function AppointmentScreen({ navigation }) {
                     <View>
                         {activetab === 'Upcoming' && <UpcomingAppointments navigation={navigation} appointments={Appointment.filter(a => a.status === 'upcoming' || a.status === 'reschedule')} />}
                         {activetab === 'Completed' && <CompletedAppointments appointments={Appointment.filter(a => a.status === 'completed')} navigation={navigation} />}
-                        {activetab === 'Canceled' && <CanceledAppointments appointments={Appointment.filter(a => a.status === 'cancel')} />}
+                        {activetab === 'Canceled' && <CanceledAppointments appointments={Appointment.filter(a => a.status === 'canceled')} />}
                     </View>}
             </ScrollView>
+
         </View>
 
 

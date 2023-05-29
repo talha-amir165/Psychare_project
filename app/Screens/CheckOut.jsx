@@ -2,15 +2,17 @@ import { View, Text, TouchableOpacity, Image, Button, Modal, StyleSheet } from '
 import { useSelector, useDispatch } from 'react-redux';
 import AppointmentServices from '../services/AppointmentService'
 
-import React, { useContext, useState } from 'react'
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Feather } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
+import React, { useState } from 'react'
+// import { MaterialCommunityIcons } from '@expo/vector-icons';
+// import { Feather } from '@expo/vector-icons';
+// import { AntDesign } from '@expo/vector-icons';
+
 
 const CheckOut = ({ navigation, route }) => {
     const doc = route.params.doc;
     const Dateformat = route.params.Dateformat;
     const Type = route.params.Type;
+    const dispatch = useDispatch();
 
     const SelectedDate = route.params.SelectedDate;
     const SelectedSlot = route.params.SelectedSlot;
@@ -76,13 +78,20 @@ const CheckOut = ({ navigation, route }) => {
 
     const handleModalClose = () => {
         setModalVisible(false);
+        dispatch({
+            type: 'SET_LOADING',
+            payload: {
+                Search: true,
+                Appoint: true
+            }
+        });
         navigation.navigate('AppointmentScreen');
     };
 
 
 
     return (
-        <View>
+        <View style={{ backgroundColor: '#F8F9FA', height: '100%' }}>
             <View style={{ flexDirection: 'row', marginTop: 70 }}>
                 <TouchableOpacity style={{ marginTop: -5, marginLeft: 5 }} onPress={() => {
                     navigation.goBack()
@@ -90,28 +99,28 @@ const CheckOut = ({ navigation, route }) => {
                     <Image style={{}} source={require('../assets/Back.png')}></Image>
                 </TouchableOpacity>
                 <View style={{ marginLeft: 120 }}>
-                    <Text style={{ fontSize: 16, fontWeight: '600', }}>CheckOut</Text>
+                    <Text style={[{ fontSize: 16, fontWeight: '600' }, styles.blackText]}>CheckOut</Text>
 
                 </View>
 
             </View>
             <View style={{ backgroundColor: 'white', borderRadius: 8, width: '90%', marginHorizontal: 20 }}>
-                <Text style={{ fontSize: 16, fontWeight: '500', marginHorizontal: 10 }}>Contact info</Text>
+                <Text style={[{ fontSize: 16, fontWeight: '500', marginHorizontal: 10 }, styles.blackText]}>Contact info</Text>
                 <View style={{ flexDirection: 'row', marginTop: 10, marginHorizontal: 10 }}>
 
-                    <MaterialCommunityIcons name="email-outline" size={20} color="black" />
+                    {/* <MaterialCommunityIcons name="email-outline" size={20} color="black" /> */}
 
 
-                    <Text style={{ fontSize: 14, fontWeight: 'bold', marginLeft: 10 }}>{userData.email}</Text>
+                    <Text style={[{ fontSize: 14, fontWeight: 'bold', marginLeft: 10 }, styles.blackText]}>{userData.email}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', marginTop: 10, marginHorizontal: 10 }}>
 
-                    <Feather name="phone" size={20} color="black" />
+                    {/* <Feather name="phone" size={20} color="black" /> */}
 
-                    <Text style={{ fontSize: 14, fontWeight: 'bold', marginLeft: 7 }}>{userData.number ? userData.number : "not Added"}</Text>
+                    <Text style={[{ fontSize: 14, fontWeight: 'bold', marginLeft: 7 }, styles.blackText]}>{userData.number ? userData.number : "not Added"}</Text>
                 </View>
                 <View style={{ marginVertical: 20, marginHorizontal: 10 }}>
-                    <Text style={{ fontWeight: '500', fontSize: 16 }}>
+                    <Text style={[{ fontWeight: '500', fontSize: 16 }, styles.blackText]}>
                         Payment method
                     </Text>
                     {PayemntMethod == undefined &&
@@ -119,8 +128,8 @@ const CheckOut = ({ navigation, route }) => {
                             <TouchableOpacity onPress={() => {
                                 navigation.navigate('Form', { checkoutScreen: true, SelectedDate, SelectedSlot, doc, Dateformat, Type })
                             }} style={{ marginVertical: 10, flexDirection: 'row' }}>
-                                <Feather name="plus" size={25} color="royalblue" />
-                                <Text style={{ marginHorizontal: 5 }}>Add a payement method</Text>
+                                {/* <Feather name="plus" size={25} color="royalblue" /> */}
+                                <Text style={[{ marginHorizontal: 5 }, styles.blackText]}>Add a payement method</Text>
                             </TouchableOpacity>
 
                         </View>
@@ -131,7 +140,7 @@ const CheckOut = ({ navigation, route }) => {
                             <View style={{ flexDirection: 'row' }}>
                                 {PayemntMethod == 'card' ?
                                     <Image style={{ width: 30, height: 30, resizeMode: 'contain' }} source={require('../assets/card.png')}></Image> : null}
-                                <Text style={{ alignSelf: 'center' }}>
+                                <Text style={[{ alignSelf: 'center' }, styles.blackText]}>
                                     {PayemntMethod == 'card' ? 'Master Card' : 'Cash'}
                                 </Text>
                             </View>
@@ -139,14 +148,14 @@ const CheckOut = ({ navigation, route }) => {
                             <TouchableOpacity onPress={() => {
                                 navigation.navigate('Form', { checkoutScreen: true, SelectedDate, SelectedSlot, doc, Dateformat, Type })
                             }}>
-                                <AntDesign name="edit" size={24} color="black" />
+                                {/* <AntDesign name="edit" size={24} color="black" /> */}
                             </TouchableOpacity>
                         </View>
 
                     }
                     {
                         PayemntMethod == 'card' &&
-                        <Text>
+                        <Text style={styles.blackText}>
                             {maskedCardNumber}
                         </Text>
                     }
@@ -159,7 +168,7 @@ const CheckOut = ({ navigation, route }) => {
                     <Text style={{ marginLeft: 20, color: 'rgba(112, 123, 129, 1)', fontSize: 16, fontWeight: '600' }}>
                         Subtotal
                     </Text>
-                    <Text style={{ marginRight: 20, fontSize: 16, fontWeight: '500' }}>
+                    <Text style={[{ marginRight: 20, fontSize: 16, fontWeight: '500', }, styles.blackText]}>
                         {/* PKR {doc.price} */} PKR {Type == 'onsite' ? doc.onsiteAppointment.fee : doc.onlineAppointment.fee}
                     </Text>
                 </View>
@@ -167,7 +176,7 @@ const CheckOut = ({ navigation, route }) => {
                     <Text style={{ marginLeft: 20, color: 'rgba(112, 123, 129, 1)', fontSize: 16, fontWeight: '600' }}>
                         Extra charges
                     </Text>
-                    <Text style={{ marginRight: 20, fontSize: 16, fontWeight: '500' }}>
+                    <Text style={[{ marginRight: 20, fontSize: 16, fontWeight: '500' }, styles.blackText]}>
                         PKR 0.00
                     </Text>
                 </View>
@@ -175,24 +184,31 @@ const CheckOut = ({ navigation, route }) => {
                     <Text style={{ marginLeft: 20, color: 'rgba(112, 123, 129, 1)', fontSize: 16, fontWeight: '600' }}>
                         Total cost
                     </Text>
-                    <Text style={{ marginRight: 20, fontSize: 16, fontWeight: '500' }}>
+                    <Text style={[{ marginRight: 20, fontSize: 16, fontWeight: '500' }, styles.blackText]}>
                         PKR {Type == 'onsite' ? doc.onsiteAppointment.fee : doc.onlineAppointment.fee}
                     </Text>
                 </View>
                 <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 10 }}>
-                    <TouchableOpacity style={{ backgroundColor: 'rgba(65, 140, 253, 1)', width: '70%', alignItems: 'center', borderRadius: 30, padding: 10 }} onPress={handleButtonPress}>
-                        <Text style={{ color: 'white', fontSize: 18 }} >
-                            Payement
-                        </Text>
-
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: PayemntMethod == undefined ? 'grey' : 'rgba(65, 140, 253, 1)',
+                            width: '70%',
+                            alignItems: 'center',
+                            borderRadius: 30,
+                            padding: 10,
+                        }}
+                        onPress={handleButtonPress}
+                        disabled={PayemntMethod == undefined}
+                    >
+                        <Text style={{ color: 'white', fontSize: 18 }}>Book Appointment</Text>
                     </TouchableOpacity>
                     <Modal visible={modalVisible} transparent={true} animationType="fade" onRequestClose={handleModalClose}>
                         <View style={styles.modalContainer}>
                             <View style={styles.modal}>
                                 <Image source={require('../assets/Modalpic.png')}></Image>
                                 <View style={{ width: '70%', flexDirection: 'column', alignItems: 'center', marginVertical: 10 }}>
-                                    <Text style={{ fontSize: 20, fontWeight: '500' }}> Appointment is </Text>
-                                    <Text style={{ fontSize: 20, fontWeight: '500' }}> Booked </Text>
+                                    <Text style={{ fontSize: 20, fontWeight: '500', color: 'black' }}> Appointment is </Text>
+                                    <Text style={{ fontSize: 20, fontWeight: '500', color: 'black' }}> Booked </Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
                                     <TouchableOpacity
@@ -237,6 +253,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'column'
     },
+    blackText: {
+        color: 'black'
+    }
 });
 
 export default CheckOut

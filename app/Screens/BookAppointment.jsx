@@ -1,6 +1,6 @@
 import { View, Text, ScrollView, TouchableOpacity, Image, FlatList } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { AntDesign } from '@expo/vector-icons';
+
 import ProfileHeader from '../Components/ProfileHeader';
 
 
@@ -181,7 +181,7 @@ const BookAppointment = ({ route, navigation }) => {
 
             const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             const date = new Date();
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < 7; i++) {
                 const dayname = daysOfWeek[date.getDay()];
                 if (dayname == 'Sunday') {
 
@@ -205,6 +205,10 @@ const BookAppointment = ({ route, navigation }) => {
         formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
         day = date.getDay();
         console.log(day);
+        if (route.params.type != null) {
+            setType('online');
+        }
+
 
     }, []);
     useEffect(() => {
@@ -214,7 +218,8 @@ const BookAppointment = ({ route, navigation }) => {
         setSelectedSlot(null);
         setdisabled(true);
         if (SelectedDate != null) {
-            const dateformat = `${SelectedDate.year}-${SelectedDate.month}-${SelectedDate.day}`;
+            const dateformat = `${SelectedDate.year}-${SelectedDate.month.toString().padStart(2, '0')}-${SelectedDate.day.toString().padStart(2, '0')}`;
+
             setDate(dateformat);
             console.log(Dateformat);
         }
@@ -249,20 +254,20 @@ const BookAppointment = ({ route, navigation }) => {
                 </View>
                 <View style={{ backgroundColor: 'white', borderRadius: 30, height: '100%' }}>
                     <View style={{ marginHorizontal: 25 }}>
-                        <Text style={{ fontSize: 24, fontWeight: '500', marginTop: 20 }}>
+                        <Text style={{ fontSize: 24, fontWeight: '500', marginTop: 20, color: 'black' }}>
                             {doc.user_id.name}
                         </Text>
                         <Text style={{ fontSize: 13, color: 'rgba(61, 65, 70, 0.7)', marginTop: 4 }}>
                             Monday to Saturday
                         </Text>
-                        <Text style={{ fontSize: 18, fontWeight: '600', marginVertical: 7 }}>
+                        <Text style={{ fontSize: 18, fontWeight: '600', marginVertical: 7, color: 'black' }}>
                             Appointment Type
                         </Text>
                         <View style={{ flexDirection: 'row' }}>
                             <HeaderButton name='onsite' activeTab={Type} setActiveTab={setType} />
                             <HeaderButton name='online' activeTab={Type} setActiveTab={setType} />
                         </View>
-                        <Text style={{ fontSize: 18, fontWeight: '600', marginVertical: 7 }}>
+                        <Text style={{ fontSize: 18, fontWeight: '600', marginVertical: 7, color: 'black' }}>
                             Date
                         </Text>
                         <FlatList
@@ -275,7 +280,7 @@ const BookAppointment = ({ route, navigation }) => {
 
 
                         />
-                        <Text style={{ fontSize: 18, fontWeight: '600', marginVertical: 8 }}>
+                        <Text style={{ fontSize: 18, fontWeight: '600', marginVertical: 8, color: 'black' }}>
                             Time Slot
                         </Text>
 
@@ -293,7 +298,7 @@ const BookAppointment = ({ route, navigation }) => {
                             Price
                         </Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'black' }}>
                                 PKR {Type == 'onsite' ? doc.onsiteAppointment.fee : doc.onlineAppointment.fee}
 
                             </Text>

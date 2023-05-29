@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     FlatList,
     StyleSheet,
@@ -7,24 +7,58 @@ import {
     View,
     Image
 } from 'react-native';
+import socket from '../Hooks/socket';
+import { useSelector, useDispatch } from 'react-redux';
+import PushNotification from "react-native-push-notification";
 
 const NotificationList = () => {
+    const dispatch = useDispatch();
     const [notifications, setNotifications] = useState([
         { id: '1', text: 'Upcoming Appointment on 4:00 pm with Dr Talha Amir', read: true, img: require('../assets/doc11.png') },
 
         { id: '3', text: 'Upcoming Appointment on 4:00 pm with Dr Oreed', read: true, img: require('../assets/doc13.png') },
 
     ]);
+    const not = useSelector(state => state.notification);
+    console.log(not);
+    const channel = () => {
+        PushNotification.createChannel({
+            channelId: "test-channel",
+            channelName: "Test channel"
+        })
+    }
 
-    const handleNotificationPress = (notificationId) => {
-        setNotifications((prevNotifications) =>
-            prevNotifications.map((notification) =>
-                notification.id === notificationId
-                    ? { ...notification, read: true }
-                    : notification,
-            ),
-        );
+
+
+    const handleNotificationPress = () => {
+        PushNotification.localNotification({
+            channelId: "test-channel",
+            title: "hello",
+            message: "congrats"
+        })
+
     };
+    useEffect(() => {
+        console.log('user changes')
+        // Event handler for appointmentNotification
+        socket.on("appointmentNotification", (notification) => {
+            // Add the new notification to the existing list
+            console.log("Appointment received" + JSON.stringify(notification));
+            dispatch({
+                type: 'SET_Notification',
+                payload: notification
+            });
+        });
+        channel();
+
+    }, []);
+
+
+
+
+
+
+
 
     const renderItem = ({ item }) => (
         <TouchableOpacity
@@ -32,17 +66,18 @@ const NotificationList = () => {
                 styles.notificationContainer,
                 item.read && styles.readNotificationContainer,
             ]}
+            onPress={handleNotificationPress}
         >
             <View style={{ flexDirection: 'row' }}>
                 {item.img &&
                     <Image source={item?.img} style={{ width: 50, height: 80, resizeMode: 'contain' }}></Image>}
 
                 <View style={{ width: '63%', padding: 10, marginLeft: 5 }}>
-                    <Text style={[styles.notificationText, item.read && styles.readNotificationText]}>
+                    <Text style={[styles.notificationText, item.read && styles.readNotificationText, styles.blackText]}>
                         {item.text}
                     </Text>
                 </View>
-                <Text>
+                <Text style={styles.blackText}>
                     6 mins ago
                 </Text>
                 {item.read && <View style={styles.dot} />}
@@ -59,7 +94,7 @@ const NotificationList = () => {
         }}>
             <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 70 }}>
 
-                <Text style={{ fontSize: 16, fontWeight: '600' }}>Notifications</Text>
+                <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>Notifications</Text>
 
 
             </View>
@@ -84,11 +119,16 @@ const styles = StyleSheet.create({
     notificationText: {
         fontSize: 16,
         fontWeight: '600',
+        color: 'black'
 
+    },
+    blackText: {
+        color: 'black'
     },
     readNotificationText: {
 
         fontWeight: 'bold',
+        color: 'black'
     },
     separator: {
         height: 7,

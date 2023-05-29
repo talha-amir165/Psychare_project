@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { View, Text, ImageBackground, StyleSheet, Image, SafeAreaView, TextInput, TouchableOpacity, FlatList, ScrollView } from 'react-native'
 // import { EvilIcons } from '@expo/vector-icons';
-// import { AntDesign } from '@expo/vector-icons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -39,7 +39,7 @@ export default function Home({ navigation }) {
                 }}>
                     <Image style={{ width: 80, height: 80, borderRadius: 50 }} source={item.pic}></Image>
 
-                    <Text style={styles.cardname}>
+                    <Text style={[styles.cardname, { color: 'black' }]}>
                         {item.Drname}
                     </Text>
 
@@ -47,12 +47,12 @@ export default function Home({ navigation }) {
                         psycologist
                     </Text>
                     <View style={{ display: 'flex', flexDirection: 'row', marginTop: 4 }}>
-                        {/* <AntDesign name="staro" size={12} color="black" style={{ marginTop: 4, marginRight: 3 }} /> */}
+                        <AntDesign name="staro" size={12} color="black" style={{ marginTop: 4, marginRight: 3 }} />
                         {/* rating fetch and display */}
-                        <Text style={{ fontSize: 11, }}>
+                        <Text style={{ fontSize: 11, color: 'black' }}>
                             {item.rating}
                         </Text>
-                        <Text style={{ fontSize: 11, marginLeft: 4 }}>120+ reviews</Text>
+                        <Text style={{ fontSize: 11, marginLeft: 4, color: 'black' }}>120+ reviews</Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -72,18 +72,9 @@ export default function Home({ navigation }) {
 
                     </Image>
                 </TouchableOpacity>
-                <View style={styles.piccontain}>
-                    <Image source={require("../assets/blankPic.png")} style={styles.profile}></Image>
-                    <Text>
-                        {userData?.name}
-                    </Text>
 
-                </View>
             </View>
-            <View style={{ display: 'flex', alignItems: 'center', marginTop: 60, marginLeft: -50, flexDirection: 'row', justifyContent: "center" }}>
-                {/* <EvilIcons name="search" size={24} color="black" style={{ paddingRight: 20 }} /> */}
-                <TextInput placeholder='Search for doctors' style={styles.search}></TextInput>
-            </View>
+
             <Text style={styles.text20}>
                 Booked Appointments
             </Text>
@@ -107,7 +98,7 @@ export default function Home({ navigation }) {
 
             </View>
             <View style={{ display: 'flex', flexDirection: 'row', marginTop: 40, width: "100%" }}>
-                <Text style={{ fontSize: 20, marginLeft: 20 }}>
+                <Text style={{ fontSize: 20, marginLeft: 20, color: 'black' }}>
                     Popular doctors
                 </Text>
                 <TouchableOpacity style={{ marginLeft: 140, marginTop: 10 }}>
@@ -142,7 +133,8 @@ const styles = StyleSheet.create({
     },
     cardname: {
         fontSize: 20,
-        marginTop: 10
+        marginTop: 10,
+        color: 'black'
     },
     docname: {
         fontWeight: '600',
@@ -166,7 +158,7 @@ const styles = StyleSheet.create({
     text20: {
         fontSize: 20,
         marginTop: 50,
-        marginLeft: 20
+        marginLeft: 20, color: 'black'
     },
     piccontain: {
         width: 50,

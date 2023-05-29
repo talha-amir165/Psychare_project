@@ -96,7 +96,7 @@ const PaymentForm = ({ navigation, route }) => {
     <View style={styles.container}>
 
       <View style={{ marginTop: 40 }}>
-        <Text style={styles.label}>Payment Method</Text>
+        <Text style={[styles.label, styles.BlackText]}>Payment Method</Text>
         <View>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <RadioButton
@@ -104,7 +104,7 @@ const PaymentForm = ({ navigation, route }) => {
               status={isCardPayment === 'Cash' ? 'checked' : 'unchecked'}
               onPress={() => setIsCardPayment('Cash')}
             />
-            <Text>Cash</Text>
+            <Text style={styles.BlackText}>Cash</Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <RadioButton
@@ -112,7 +112,7 @@ const PaymentForm = ({ navigation, route }) => {
               status={isCardPayment === 'card' ? 'checked' : 'unchecked'}
               onPress={() => setIsCardPayment('card')}
             />
-            <Text>Card</Text>
+            <Text style={styles.BlackText}>Card</Text>
           </View>
         </View>
       </View>
@@ -121,7 +121,7 @@ const PaymentForm = ({ navigation, route }) => {
       {isCardPayment == 'card' && (
         <View>
           <View style={styles.field}>
-            <Text style={styles.label}>Card Number</Text>
+            <Text style={[styles.label, styles.BlackText]}>Card Number</Text>
             {cardError ? null : <Image source={require('../assets/card.png')} style={{ width: 40, height: 40, resizeMode: 'contain', top: 40 }} />}
             <TextInput
               keyboardType="numeric"
@@ -129,13 +129,14 @@ const PaymentForm = ({ navigation, route }) => {
               onChangeText={handleCardNumberChange}
               onBlur={validateCardNumber}
               value={cardNumber}
-              style={[styles.input, { paddingLeft: 40 }]}
+
+              style={[styles.input, { paddingLeft: 40 }, styles.BlackText]}
             />
 
           </View>
           {cardError ? <Text style={styles.error}>{cardError}</Text> : null}
           <View style={styles.field}>
-            <Text style={styles.label}>CVV</Text>
+            <Text style={[styles.label, styles.BlackText]}>CVV</Text>
             <TextInput
               keyboardType="numeric"
               maxLength={3}
@@ -192,6 +193,9 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 24,
   },
+  BlackText: {
+    color: 'black'
+  }
 });
 
 export default PaymentForm;

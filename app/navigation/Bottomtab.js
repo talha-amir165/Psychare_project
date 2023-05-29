@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-// import { FontAwesome, AntDesign, EvilIcons } from '@expo/vector-icons';
-// import { Fontisto } from '@expo/vector-icons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import EvilIcons from 'react-native-vector-icons/EvilIcons'
+import Fontisto from 'react-native-vector-icons/Fontisto'
+;
 import Home from '../Screens/Home';
 
 import AppointmentScreen from '../Screens/AppointmentScreen';
 import Search from '../Screens/Search';
 import { View, Text, ImageBackground, StyleSheet, Image, SafeAreaView, TextInput, TouchableOpacity, TouchableHighlight, ScrollView } from 'react-native'
-// import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import NotificationList from '../Screens/NotificationList';
 import { useSelector, useDispatch } from 'react-redux';
 import userService from '../services/UserService';
@@ -25,38 +28,38 @@ const Bottomtab = () => {
         <Tab.Navigator
             screenOptions={({ route, headerShown }) => ({
                 headerShown: false,
-                // tabBarIcon: ({ focused, color, size }) => {
-                //     let iconName;
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
 
-                //     if (route.name === 'Home') {
-                //         iconName = focused ? 'home' : 'home'; // Set the icon for the Home screen
-                //     } else if (route.name === 'Login') {
-                //         iconName = focused ? 'user' : 'user'; // Set the icon for the Settings screen
-                //     }
-                //     else if (route.name === 'AppointmentScreen') {
-                //         iconName = focused ? 'calendar' : 'calendar'
-                //     }
-                //     else if (route.name == 'Search') {
-                //         iconName = focused ? 'search' : 'search'
-                //     }
-
-
-
-                //     {
-                //         if (route.name === 'Home')
-                //             return <FontAwesome name={iconName} size={size} color={color} />;
-                //         else if (route.name == 'Notification')
-                //             return <Ionicons name="md-notifications-outline" size={24} color="black" />
-
-                //         else if (route.name === 'AppointmentScreen')
-                //             return <EvilIcons name={iconName} size={size} color={color} />
-                //         else if (route.name == 'Search')
-                //             return <Fontisto name={iconName} size={size} color={color} />
-                //     }
+                    if (route.name === 'Home') {
+                        iconName = focused ? 'home' : 'home'; // Set the icon for the Home screen
+                    } else if (route.name === 'Login') {
+                        iconName = focused ? 'user' : 'user'; // Set the icon for the Settings screen
+                    }
+                    else if (route.name === 'AppointmentScreen') {
+                        iconName = focused ? 'calendar' : 'calendar'
+                    }
+                    else if (route.name == 'Search') {
+                        iconName = focused ? 'search' : 'search'
+                    }
 
 
 
-                // },
+                    {
+                        if (route.name === 'Home')
+                            return <FontAwesome name={iconName} size={size} color={color} />;
+                        else if (route.name == 'Notification')
+                            return <Ionicons name="md-notifications-outline" size={24} color="black" />
+
+                        else if (route.name === 'AppointmentScreen')
+                            return <EvilIcons name={iconName} size={size} color={color} />
+                        else if (route.name == 'Search')
+                            return <Fontisto name={iconName} size={size} color={color} />
+                    }
+
+
+
+                },
                 tabBarButton: props => (
                     <TouchableOpacity
                         {...props}

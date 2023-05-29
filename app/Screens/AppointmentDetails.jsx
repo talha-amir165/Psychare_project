@@ -1,29 +1,32 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, ScrollView, TextInput } from 'react-native'
-import React, { useState } from 'react'
-import { MaterialIcons } from '@expo/vector-icons';
-import { Octicons } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
-import { useSelector } from 'react-redux';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, ScrollView, TextInput, Alert } from 'react-native'
+import React, { useState, useEffect } from 'react'
+// import { MaterialIcons } from '@expo/vector-icons';
+// import { Octicons } from '@expo/vector-icons';
+// import { Entypo } from '@expo/vector-icons';
+import { useSelector, useDispatch } from 'react-redux';
 import { formatDate } from '../Hooks/formatDate';
-import { formatTime } from '../Hooks/formatTime';
+import { formatTimes } from '../Hooks/formatTime';
 import appointmentService from '../services/AppointmentService';
 import ProfileHeader from '../Components/ProfileHeader';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import StarRating from '../Components/StarRating';
 import reviewService from '../services/ReviewService';
+import Icon1 from 'react-native-vector-icons/Entypo';
+import VideoConferencePage from './VideoConferencePage';
 
 
 
 const AppointmentDetails = ({ route, navigation }) => {
     const userData = useSelector(state => state.user.userData);
     const Details = route.params.item;
-    console.log(Details)
+
 
     const [visible, setVisible] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [reviewModal, setReviewModal] = useState(false);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
+    const [review, setreview] = useState(true);
     const handleAddReview = () => {
         setReviewModal(true);
     }
@@ -39,13 +42,15 @@ const AppointmentDetails = ({ route, navigation }) => {
     const handleReview = () => {
         reviewService.addReview(Details._id, {
             rating: rating,
-            comment: comment
+            comment: comment,
+            patientname: userData.name
         }).then(response => {
             console.log("response of review" + JSON.stringify(response));
 
             setRating(0);
             setComment('');
             setReviewModal(false);
+            setreview(false);
         }).catch(err => console.log(err))
 
 
@@ -61,11 +66,12 @@ const AppointmentDetails = ({ route, navigation }) => {
     };
     const cancelButton = () => {
         appointmentService.updateAppointment(Details._id, {
-            status: 'cancel'
+            status: 'canceled'
         })
             .then((data) => {
                 console.log(data);
                 setModalVisible(false);
+                navigation.navigate('AppointmentScreen')
 
             })
             .catch((err) => {
@@ -88,7 +94,7 @@ const AppointmentDetails = ({ route, navigation }) => {
                         <Text style={styles.CancelAppointment}>Cancel Appointment</Text>
 
                         <View style={styles.subtotalContainer}>
-                            <Text style={styles.subtotalText}>Are  you sure to cancel this appointment</Text>
+                            <Text style={[styles.subtotalText, styles.BlackText]}>Are  you sure to cancel this appointment</Text>
 
                         </View>
                         <View style={{ flexDirection: "row", justifyContent: "center", marginVertical: 50 }}>
@@ -137,6 +143,9 @@ const AppointmentDetails = ({ route, navigation }) => {
             </>
         );
     };
+
+
+
     const ReviewModal = () => {
 
         return (
@@ -144,13 +153,13 @@ const AppointmentDetails = ({ route, navigation }) => {
                 <View style={styles.container}>
                     <View style={styles.modal}>
                         <View style={styles.rating}>
-                            <Text style={styles.label}>Rating:</Text>
+                            <Text style={[styles.label, styles.BlackText]}>Rating:</Text>
                             <StarRating defaultRating={rating} size={30} onRated={handleRating} />
                         </View>
                         <View style={styles.comment}>
-                            <Text style={styles.label}>Comment:</Text>
+                            <Text style={[styles.label, styles.BlackText]}>Comment:</Text>
                             <TextInput
-                                style={styles.commentInput}
+                                style={[styles.commentInput, styles.BlackText]}
                                 multiline={true}
                                 placeholder="Add a comment..."
                                 value={comment}
@@ -170,22 +179,74 @@ const AppointmentDetails = ({ route, navigation }) => {
             </Modal>
         );
     };
+    const getCurrentDateTime = () => {
+        const currentDateTime = new Date();
+        const currentDate = currentDateTime.toISOString().split('T')[0];
+        const currentTime = currentDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        return { currentDate, currentTime };
+    };
+    const [isEnabled, setEnabled] = useState(false);
+    const [remainingTime, setRemainingTime] = useState(null);
+    const [dayName, setDayName] = useState(null);
+    useEffect(() => {
+        const { currentDate, currentTime } = getCurrentDateTime();
+        const appointmentDateTime = `${Details.datetime.date} ${Details.datetime.time}`;
+        const currentDateTime = `${currentDate} ${currentTime}`;
+
+        if (currentDateTime >= appointmentDateTime) {
+            setEnabled(true);
+        } else {
+            const remainingTime = calculateRemainingTime(currentDateTime, appointmentDateTime);
+
+            setRemainingTime(remainingTime);
+            setDayName(Details.datetime.day);
+            setTimeout(() => {
+                setEnabled(true);
+            }, remainingTime);
+        }
+    }, []);
+    const calculateRemainingTime = (currentDateTime, appointmentDateTime) => {
+        const currentTimestamp = new Date(currentDateTime).getTime();
+        const appointmentTimestamp = new Date(appointmentDateTime).getTime();
+        const remainingTime = appointmentTimestamp - currentTimestamp;
+        return remainingTime;
+    };
+    const formatTime = (milliseconds) => {
+        const hours = Math.floor(milliseconds / (1000 * 60 * 60));
+        const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
+
+        return `${hours}h ${minutes}m`;
+    };
+
+    const handleVideoCall = () => {
+        if (isEnabled) {
+            // Handle video call functionality
+            navigation.navigate('Call', { Details })
+        } else if (remainingTime) {
+            const formattedTime = formatTime(remainingTime);
+            Alert.alert('Video Call Disabled', `You can join the video call in ${formattedTime}`);
+        } else if (dayName) {
+            Alert.alert('Video Call Disabled', `The video call is scheduled for ${dayName}`);
+        }
+    };
+
 
 
 
     return (
-        <View style={{ marginTop: 70, marginHorizontal: 6, height: '100%', flexDirection: 'column' }}>
+        <View style={{ flexDirection: 'column', backgroundColor: '#F8F9FA', height: '100%', }}>
 
-            <View style={Details.status != 'completed' ? styles.appointmentText : styles.appointmentCompleted}>
+            <View style={[Details.status != 'completed' ? styles.appointmentText : styles.appointmentCompleted, { marginTop: 50, marginHorizontal: 6, }]}>
                 <TouchableOpacity style={{ marginTop: -5 }} onPress={() => {
                     navigation.goBack()
                 }}>
                     <Image style={{}} source={require('../assets/Back.png')}></Image>
                 </TouchableOpacity>
-                <Text style={Details.status != 'completed' ? styles.appointment : styles.appCompleted}>My Appointment</Text>
+                <Text style={[Details.status != 'completed' ? styles.appointment : styles.appCompleted, styles.BlackText]}>My Appointment</Text>
 
                 {Details.status != 'completed' && <TouchableOpacity onPress={handleMenuPress}>
-                    <Entypo name="dots-three-vertical" size={24} color="black" />
+                    <Icon1 name="dots-three-vertical" size={24} color="black" />
                 </TouchableOpacity>}
                 <Modal transparent visible={visible} >
                     <View >
@@ -197,7 +258,7 @@ const AppointmentDetails = ({ route, navigation }) => {
                                     setVisible(false)
                                 }}
                             >
-                                <Text>
+                                <Text style={styles.BlackText}>
                                     Cancel
                                 </Text>
                             </TouchableOpacity>
@@ -206,7 +267,7 @@ const AppointmentDetails = ({ route, navigation }) => {
                                 navigation.navigate("Rescheduled", { Details })
                                 setModalVisible(false)
                             }}>
-                                <Text>
+                                <Text style={styles.BlackText}>
                                     ReScheduled
                                 </Text>
 
@@ -225,50 +286,50 @@ const AppointmentDetails = ({ route, navigation }) => {
 
                 <View style={{ marginHorizontal: 14 }}>
 
-                    <Text style={{ marginTop: 15, fontSize: 18, fontWeight: 'bold' }}>
+                    <Text style={{ marginTop: 15, fontSize: 18, fontWeight: 'bold', color: 'black' }}>
                         Appointment Details
                     </Text>
 
                     <View style={{ marginVertical: 15, marginHorizontal: 10, paddingBottom: 100 }}>
 
 
-                        <Text style={styles.heading}>
+                        <Text style={[styles.heading, styles.BlackText]}>
                             Patient Name
                         </Text>
-                        <Text style={styles.textStyle}>
+                        <Text style={[styles.textStyle, styles.BlackText]}>
                             {userData.name}
                         </Text>
-                        <Text style={styles.heading}>
+                        <Text style={[styles.heading, styles.BlackText]}>
                             Date
                         </Text>
-                        <Text style={styles.textStyle}>
+                        <Text style={[styles.textStyle, styles.BlackText]}>
                             {formatDate(Details.datetime.date)}
                         </Text>
-                        <Text style={styles.heading}>
+                        <Text style={[styles.heading, styles.BlackText]}>
                             Timing
                         </Text>
-                        <Text style={styles.textStyle}>
-                            {formatTime(Details.datetime.time)}
+                        <Text style={[styles.textStyle, styles.BlackText]}>
+                            {formatTimes(Details.datetime.time)}
                         </Text>
 
-                        <Text style={styles.heading}>
-                            Appointment Detail
+                        <Text style={[styles.heading, styles.BlackText]}>
+                            Appointment Type
                         </Text>
-                        <Text style={styles.textStyle}>
-                            {Details.appointmenttype == 'online' ? "online" : ` ${Details.location}`}
+                        <Text style={[styles.textStyle, styles.BlackText]}>
+                            {Details.appointmenttype == 'online' ? "Online Appointment" : "OnSite Appointment"}
                         </Text>
-                        <Text style={styles.heading}>
+                        <Text style={[styles.heading, styles.BlackText]}>
                             Status
                         </Text>
-                        <Text>
+                        <Text style={styles.BlackText}>
                             {Details.status}
                         </Text>
 
 
-                        <Text style={styles.heading}>
+                        <Text style={[styles.heading, styles.BlackText]}>
                             Fees
                         </Text>
-                        <Text style={styles.textStyle}>
+                        <Text style={[styles.textStyle, styles.BlackText]}>
                             PKR  {Details.fee}
                         </Text>
 
@@ -280,18 +341,28 @@ const AppointmentDetails = ({ route, navigation }) => {
                                 style={{ marginTop: 10, backgroundColor: ' rgba(65, 140, 253, 0.05)', marginHorizontal: 5, padding: 25, borderRadius: 15 }}
                             >
                                 <Image source={require('../assets/medical-report.png')} style={{ height: 50, width: 50, resizeMode: 'contain' }}></Image>
-                                <Text>
+                                <Text style={styles.BlackText}>
                                     Report
                                 </Text>
                             </TouchableOpacity>
 
-                            {Details.reviewed == false && <TouchableOpacity
+                            {Details.status == 'completed' && Details.reviewed == false && <TouchableOpacity
                                 style={styles.addButton}
                                 onPress={handleAddReview}
                             >
                                 <Text style={styles.buttonText1}>Add Review</Text>
-                                <MaterialIcons name="add-circle-outline" size={24} color="white" />
+                                {/* <MaterialIcons name="add-circle-outline" size={24} color="white" /> */}
                             </TouchableOpacity>}
+
+                            {Details.status == 'upcoming' && review && <TouchableOpacity
+                                style={{ marginTop: 40, marginLeft: 50, }}
+                                onPress={handleVideoCall}>
+                                <Icon name="video-camera" size={30} color="skyblue" />
+                                <Text style={{ color: 'skyblue' }}>
+                                    Video Call
+                                </Text>
+                            </TouchableOpacity>}
+
 
 
 
@@ -355,6 +426,9 @@ const styles = StyleSheet.create({
     },
     icon: {
         marginLeft: 6
+    },
+    BlackText: {
+        color: 'black'
     },
     text: {
         color: 'white',

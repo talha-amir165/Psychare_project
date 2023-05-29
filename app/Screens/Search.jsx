@@ -1,12 +1,15 @@
 
 import React, { useState, useEffect } from 'react'
-import { View, Text, Modal, ImageBackground, StyleSheet, Image, TextInput, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native'
-// import { Ionicons } from '@expo/vector-icons';
+import { View, Text, Modal, ImageBackground, StyleSheet, Image, TextInput, TouchableOpacity, FlatList, ActivityIndicator, ScrollView } from 'react-native'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 // import { AntDesign } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
+import Icon from 'react-native-vector-icons/AntDesign';
+import { useSelector, useDispatch } from 'react-redux';
 
 
-import { MaterialIcons } from '@expo/vector-icons';
+
+
 import useFetch from '../Hooks/useFetch';
 import { useNavigation, useNavigationState } from '@react-navigation/native';
 
@@ -56,6 +59,7 @@ const Search = ({ route, navigation }) => {
     const [Ratinglist, setRatinglist] = useState(false);
     const [RatingOrder, setRatingOrder] = useState('Select');
     const { data, loading, error, reFetch } = useFetch('http://13.53.188.158:4000/api/users/psychologists/allpsychologists');
+    // console.log(data);
 
 
     const [filteredDoctors, setFilteredDoctors] = useState([]);
@@ -96,11 +100,11 @@ const Search = ({ route, navigation }) => {
             }} >
                 <View style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white',
-                    marginTop: 20, borderRadius: 16, width: 165, marginHorizontal: 15
+                    marginTop: 20, borderRadius: 16, width: 165, marginHorizontal: 15, marginBottom: 7
                 }}>
                     {/* <Image style={{ width: 80, height: 80, borderRadius: 50, resizeMode: 'contain' }} source={item.pic}></Image> */}
 
-                    <Text style={styles.cardname}>
+                    <Text style={[styles.cardname, styles.BlackText]}>
                         {item.user_id && item.user_id.name}
                     </Text>
 
@@ -108,15 +112,15 @@ const Search = ({ route, navigation }) => {
                         psycologist
                     </Text>
                     <View style={{ display: 'flex', flexDirection: 'row', marginTop: 4 }}>
-                        {/* <AntDesign name="staro" size={12} color="black" style={{ marginTop: 4, marginRight: 3 }} /> */}
+                        <Icon name="staro" size={12} color="black" style={{ marginTop: 4, marginRight: 3 }} />
                         {/* rating fetch and display */}
-                        <Text style={{ fontSize: 11, }}>
+                        <Text style={{ fontSize: 11, color: 'black' }}>
                             {item.rating}
                         </Text>
 
                     </View>
-                    <Text>{item.onsiteAppointment && item.onsiteAppointment.city}</Text>
-                    <Text>
+                    <Text style={styles.BlackText}>{item.onsiteAppointment && item.onsiteAppointment.city}</Text>
+                    <Text style={styles.BlackText}>
                         Fees : {item.onsiteAppointment && item.onsiteAppointment.fee}
                     </Text>
 
@@ -185,13 +189,23 @@ const Search = ({ route, navigation }) => {
 
         }
     }, [query, data, loading, selectedCity/*PriceOrder, RatingOrder*/]);
+    const Loadings = useSelector(state => state.LoadingState.Search);
+    const dispatch = useDispatch();
+
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
 
 
 
-
+            // if (Loadings) {
             reFetch();
+            dispatch({
+                type: 'SET_LOADING',
+                payload: false
+            });
+
+
+
         });
 
         return unsubscribe;
@@ -199,28 +213,30 @@ const Search = ({ route, navigation }) => {
 
 
     return (
-        <View style={{ marginTop: 30 }}>
-            <Text>Search</Text>
-            <TextInput
 
+        <View style={{ paddingTop: 20, backgroundColor: '#F8F9FA', height: '100%' }}>
+
+            <TextInput
+                placeholderTextColor={'black'}
+                style={styles.BlackText}
                 onChangeText={handleSearch}
                 value={query}
                 placeholder="Search doctors by name..."
             />
             <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <Text>Filter</Text>
+                <Text style={styles.BlackText}>Filter</Text>
             </TouchableOpacity>
             <Modal animationType="fade" visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
-                {/* <Ionicons name="arrow-back-sharp" size={24} color="black" onPress={() => { setModalVisible(false) }} style={{ marginTop: 5, marginHorizontal: 10 }} /> */}
+                <Ionicons name="arrow-back-sharp" size={24} color="black" onPress={() => { setModalVisible(false) }} style={{ marginTop: 5, marginHorizontal: 10 }} />
                 <View style={{ flex: 1, marginHorizontal: 15, marginVertical: 50 }}  >
 
                     <View style={{}}>
-                        <Text style={styles.filterhead}>
+                        <Text style={[styles.filterhead, styles.BlackText]}>
                             City Filter
                         </Text>
 
                         <Picker
-                            style={{ width: '50%' }}
+                            style={{ width: '50%', color: 'black' }}
                             selectedValue={selectedCity}
                             onValueChange={(itemValue, itemIndex) =>
                                 setSelectedCity(itemValue)
@@ -235,11 +251,11 @@ const Search = ({ route, navigation }) => {
                     <View style={{ flexDirection: 'column', marginTop: 5 }}>
 
 
-                        <Text style={styles.filterhead}>
+                        <Text style={[styles.filterhead, styles.BlackText]}>
                             Select Price Order
                         </Text>
                         <Picker
-                            style={{ width: '50%' }}
+                            style={{ width: '50%', color: 'black' }}
                             selectedValue={PriceOrder}
                             onValueChange={(itemValue, itemIndex) =>
                                 setPriceOrder(itemValue)
@@ -258,11 +274,11 @@ const Search = ({ route, navigation }) => {
                     <View style={{ flexDirection: 'column', marginTop: 5 }}>
 
 
-                        <Text style={styles.filterhead}>
+                        <Text style={[styles.filterhead, styles.BlackText]}>
                             Ratings
                         </Text>
                         <Picker
-                            style={{ width: '50%' }}
+                            style={{ width: '50%', color: 'black' }}
                             selectedValue={RatingOrder}
                             onValueChange={(itemValue, itemIndex) =>
                                 setRatingOrder(itemValue)
@@ -273,7 +289,7 @@ const Search = ({ route, navigation }) => {
                             <Picker.Item label="Lowest" value="Lowest" />
 
                         </Picker>
-                        <Text style={styles.filterhead}>
+                        <Text style={[styles.filterhead, styles.BlackText]}>
                             Select Specialization
                         </Text>
                         <Picker
@@ -296,7 +312,9 @@ const Search = ({ route, navigation }) => {
 
 
 
-                        <TouchableOpacity style={{ backgroundColor: '#007FFF', alignItems: 'center', width: '30%', marginTop: 20, borderRadius: 15, padding: 7 }}>
+                        <TouchableOpacity style={{ backgroundColor: '#007FFF', alignItems: 'center', width: '30%', marginTop: 20, borderRadius: 15, padding: 7 }}
+                            onPress={() => { setModalVisible(false) }}
+                        >
                             <Text style={{ color: 'white', fontSize: 16 }}>
                                 Apply
                             </Text>
@@ -308,25 +326,31 @@ const Search = ({ route, navigation }) => {
                 </View>
             </Modal>
 
-            <View style={{ marginBottom: 150 }}>
+            <View>
 
                 {loading ? (<View style={{ justifyContent: 'center', alignItems: 'center', marginVertical: 50 }}><ActivityIndicator size="large" color="skyblue" /></View>) : (
-                    <FlatList
-                        data={filteredDoctors}
-                        keyExtractor={item => item._id}
-                        renderItem={renderItem}
+                    <View style={{ marginBottom: 100 }}>
+
+                        <FlatList
+                            data={filteredDoctors}
+                            keyExtractor={item => item._id}
+                            renderItem={renderItem}
 
 
-                        numColumns={2}
-                        key={2}
-                        horizontal={false}
+                            numColumns={2}
+                            key={2}
+                            horizontal={false}
 
 
-                    />)}
+                        />
+                    </View>
+
+                )}
             </View>
 
 
         </View>
+
     )
 }
 const styles = StyleSheet.create({
@@ -379,6 +403,7 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 100
     },
+    BlackText: { color: 'black' },
 
 
     hammenu: {

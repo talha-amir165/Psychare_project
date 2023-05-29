@@ -13,7 +13,7 @@ export default function UpcomingAppointments({ navigation, route, appointments }
         <ScrollView>
             <View style={{ marginVertical: 20 }}>
 
-                <Text style={{ marginBottom: 10, fontSize: 18, marginHorizontal: 15, fontWeight: '500' }}>
+                <Text style={{ marginBottom: 10, fontSize: 18, marginHorizontal: 15, fontWeight: '500', color: 'black' }}>
                     Upcoming Appointments
                 </Text>
 
@@ -62,7 +62,7 @@ export default function UpcomingAppointments({ navigation, route, appointments }
                                         <Text style={styles.location}>
                                             {item.Location}
                                         </Text>}
-                                    <Text style={{ fontSize: 20, marginTop: 5, marginBottom: 5 }}>
+                                    <Text style={{ fontSize: 20, marginTop: 5, marginBottom: 5, color: 'black' }}>
                                         {item.psychologist_id.user_id.name}
                                     </Text>
                                     <Text style={{ fontSize: 12, fontWeight: '600', color: 'rgba(61, 65, 70, 0.6)' }}>

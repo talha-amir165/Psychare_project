@@ -1,6 +1,6 @@
 
 import Conversation from "../Components/Conversation";
-import Message from "../Components/Message";
+
 import { useEffect, useRef, useState } from "react";
 import { View, Text, TextInput, ScrollView, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import chatService from "../services/ChatService";
@@ -75,7 +75,7 @@ export default function Messenger({ navigation }) {
                 <View style={{ flex: 1, flexDirection: 'row', marginHorizontal: 20 }}>
                     <View >
                         <View style={{ marginTop: 40 }}>
-                            <Text>
+                            <Text style={{ color: 'black' }}>
                                 Messages
                             </Text>
 

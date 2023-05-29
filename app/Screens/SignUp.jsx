@@ -105,7 +105,7 @@ export default function SignUp({ navigation }) {
           </Text>
           <TouchableHighlight style={{ color: 'black', marginLeft: 3 }} onPress={() => { navigation.navigate("Login") }}>
             <View >
-              <Text>Sign In</Text>
+              <Text style={{ color: 'black' }}>Sign In</Text>
             </View>
           </TouchableHighlight>
         </View>

@@ -6,7 +6,7 @@ import { formatDate } from '../Hooks/formatDate';
 export default function CanceledAppointments({ appointments }) {
     return (
         <View style={{ marginVertical: 15 }}>
-            <Text style={{ marginBottom: 10, fontSize: 18, marginHorizontal: 15, fontWeight: '500', marginVertical: 15 }}>
+            <Text style={{ marginBottom: 10, fontSize: 18, marginHorizontal: 15, fontWeight: '500', marginVertical: 15, color: 'black' }}>
                 Canceled Appointments
             </Text>
             {
@@ -22,7 +22,7 @@ export default function CanceledAppointments({ appointments }) {
                             {item.Location && <Text style={styles.location}>
                                 {item.Location}
                             </Text>}
-                            <Text style={{ fontSize: 20, marginTop: 5, marginBottom: 5 }}>
+                            <Text style={{ fontSize: 20, marginTop: 5, marginBottom: 5, color: 'black' }}>
                                 {item.psychologist_id.user_id.name}
                             </Text>
                             <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(61, 65, 70, 0.6)' }}>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, ImageBackground, StyleSheet, Image, TextInput, TouchableOpacity, TouchableHighlight } from 'react-native'
+import { View, Text, ImageBackground, StyleSheet, Image, TextInput, TouchableOpacity, TouchableHighlight, ActivityIndicator } from 'react-native'
 
 import { useSelector, useDispatch } from 'react-redux';
 import userService from '../services/UserService';
@@ -15,13 +15,36 @@ export default function Login({ navigation }) {
 
   const [email, setEmail] = useState('');
   const [user, setuser] = useState(null);
+  const [bigloading, setbigloading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const handleTogglePasswordVisibility = () => {
     setHidePassword(!hidePassword);
   };
   const userData = useSelector(state => state.user.userData);
   const dispatch = useDispatch();
+
+  const [validEmail, setValidEmail] = useState(false);
+  const [validPassword, setValidPassword] = useState(false);
+
+
+  const validateEmail = (text) => {
+    // Email validation logic
+    // You can use a regex pattern or a library like 'validator.js' to validate the email
+    const emailPattern = /^\S+@\S+\.\S+$/;
+    const isValid = emailPattern.test(text);
+    setValidEmail(isValid);
+    setEmail(text);
+  };
+
+  const validatePassword = (text) => {
+    // Password validation logic
+    const isValid = text.length >= 5;
+    setValidPassword(isValid);
+    setPassword(text);
+  };
   const loginPress = async () => {
     try {
+      setLoading(true);
       const data = await userService.login(email, password);
       const token = await AsyncStorage.getItem('token');
       if (token) {
@@ -39,11 +62,13 @@ export default function Login({ navigation }) {
             role: decodedToken.role
           },
         });
-        socket.emit("addUser", decodedToken.patient_id);
+        socket.emit("addUser", decodedToken._id);
+        setLoading(false);
 
         navigation.navigate('DrawerScreen');
       }
     } catch (error) {
+      setLoading(false);
       console.error(error);
       // Handle error here, e.g. show error message to user
     }
@@ -56,6 +81,7 @@ export default function Login({ navigation }) {
     const checkIfLoggedIn = async () => {
       const token = await AsyncStorage.getItem('token');
       if (token) {
+
         // Decode the token to get user data
         const decodedToken = jwtDecode(token);
         console.log(decodedToken + 'token')
@@ -72,13 +98,17 @@ export default function Login({ navigation }) {
           },
         });
 
-        socket.emit("addUser", decodedToken.patient_id);
+        socket.emit("addUser", decodedToken._id);
 
         navigation.navigate('DrawerScreen');
+
         navigation.reset({
           index: 0,
           routes: [{ name: 'DrawerScreen' }],
         });
+      }
+      else {
+        setbigloading(false);
       }
     };
 
@@ -95,61 +125,79 @@ export default function Login({ navigation }) {
 
 
 
-      <View>
-        <View style={styles.container}>
-          <Text style={styles.text}>
-            Hello Again!
-          </Text>
-          <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '70%' }}>
+      {bigloading ?
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 300 }}>
+          <ActivityIndicator size="large" />
+        </View>
+        : <View>
+          <View style={styles.container}>
             <Text style={styles.textgray}>
-              Welcome Back You've Been
+              Welcome To Psychare
+
             </Text>
-            <Text style={styles.textgray}>Missed!</Text>
-          </View>
-        </View>
-
-        <View style={styles.Email}>
-          <Text style={[styles.text20, styles.blackText]}>
-            Email
-          </Text>
-          <View style={{ display: 'flex' }}>
-            <TextInput autoCapitalize='none' style={[styles.nameInput, styles.blackText]} placeholder=' Enter Email' value={email}
-              onChangeText={setEmail} keyboardType="email-address" />
-          </View>
+            <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '70%' }}>
+              <Text style={styles.textgray}>
+                Login to get Started !
+              </Text>
 
 
-        </View>
-        <View style={styles.password}>
-          <Text style={[styles.text20, styles.blackText]}>
-            Password
-          </Text>
-          <View style={styles.passicon}>
-            <View style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-              <TextInput
-                placeholder=" Password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={hidePassword}
-                style={[styles.passinput, styles.blackText]}
-
-              />
             </View>
-            <TouchableOpacity onPress={handleTogglePasswordVisibility} style={{ width: 50, height: 50 }}>
+          </View>
 
-            </TouchableOpacity>
+          <View style={styles.Email}>
+            <Text style={[styles.text20, styles.blackText]}>
+              Email
+            </Text>
+            <View style={{ display: 'flex' }}>
+              <TextInput autoCapitalize='none' style={[styles.nameInput, styles.blackText]} placeholder=' Enter Email' value={email}
+                onChangeText={setEmail} keyboardType="email-address" />
+            </View>
+
 
           </View>
-          <View style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center' }}>
-            <TouchableOpacity style={{ width: '80%' }}
-              onPress={loginPress}
-            >
-              <View style={styles.button}>
-                <Text style={styles.buttontext}> Sign In</Text>
+          <View style={styles.password}>
+            <Text style={[styles.text20, styles.blackText]}>
+              Password
+            </Text>
+            <View style={styles.passicon}>
+              <View style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <TextInput
+                  placeholder=" Password"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={hidePassword}
+                  style={[styles.passinput, styles.blackText]}
 
+                />
               </View>
+
+
+              <TouchableOpacity onPress={handleTogglePasswordVisibility} style={{ width: 50, height: 50 }}>
+
+              </TouchableOpacity>
+
+            </View>
+            <TouchableOpacity>
+              <Text style={{ color: 'blue' }}>
+                Forgot
+              </Text>
             </TouchableOpacity>
-          </View>
-          {/* <TouchableOpacity>
+            <View style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center' }}>
+              <TouchableOpacity style={{ width: '80%' }}
+                onPress={loginPress}
+              >
+                <View style={styles.button}>
+                  {loading ? (
+                    <ActivityIndicator size="small" color="white" /> // Show the loader while loading
+                  ) : (
+                    <Text style={styles.buttontext}>Sign In</Text> // Show the button text
+                  )}
+
+                </View>
+              </TouchableOpacity>
+
+            </View>
+            {/* <TouchableOpacity>
 
         <View style={styles.Googlebutton}>
         <Image style={styles.google} source={require("../assets/google.png")}>
@@ -160,20 +208,24 @@ export default function Login({ navigation }) {
         </Text>
         </View>
       </TouchableOpacity> */}
-          <View style={{ display: 'flex', alignItems: 'center', marginTop: 20, flexDirection: 'row' }}>
-            <Text style={{ color: '#707B81', marginLeft: 50 }}>
-              Don't Have An Account?
+            <View style={{ display: 'flex', alignItems: 'center', marginTop: 20, flexDirection: 'row' }}>
+              <Text style={{ color: '#707B81', marginLeft: 50 }}>
+                Don't Have An Account?
 
-            </Text>
-            <TouchableHighlight style={{ color: '#1A2530', marginLeft: 3 }}  >
-              <View >
-                <Text>Sign Up For Free</Text>
-              </View>
-            </TouchableHighlight>
+              </Text>
+              <TouchableHighlight style={{ color: '#1A2530', marginLeft: 3 }}
+                onPress={() => {
+                  navigation.navigate('SignUp')
+                }}
+              >
+                <View >
+                  <Text style={{ color: '#418CFD' }}>Sign Up For Free</Text>
+                </View>
+              </TouchableHighlight>
+            </View>
+
           </View>
-
-        </View>
-      </View>
+        </View>}
 
 
 

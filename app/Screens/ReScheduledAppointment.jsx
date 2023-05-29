@@ -3,14 +3,14 @@ import React, { useState, useEffect } from 'react'
 import { Calendar } from "react-native-calendars";
 import moment from "moment";
 import { RadioButton } from 'react-native-paper';
-import { EvilIcons } from '@expo/vector-icons';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import appointmentService from '../services/AppointmentService';
 import useFetch from '../Hooks/useFetch';
-import { formatTime } from '../Hooks/formatTime';
+import { formatTimes } from '../Hooks/formatTime';
 const ReScheduledAppointment = ({ navigation, route }) => {
     const [slotsArray, setslotArray] = useState([])
     const AppointmentDetails = route.params.Details;
-    const { data, loading, error } = useFetch('https://backend-ir87-16aork910-uzairghaffar1144.vercel.app/api/users/psychologists/' + AppointmentDetails.psychologist_id._id);
+    const { data, loading, error } = useFetch('http://13.53.188.158:4000/api/users/psychologists/' + AppointmentDetails.psychologist_id._id);
     console.log(AppointmentDetails);
     const [appointmentType, setappointmentType] = useState(AppointmentDetails.appointmenttype);
 
@@ -209,12 +209,12 @@ const ReScheduledAppointment = ({ navigation, route }) => {
                     }}>
                         <Image style={{}} source={require('../assets/Back.png')}></Image>
                     </TouchableOpacity>
-                    <Text style={{ marginLeft: 50, fontWeight: 'bold' }}>ReScheduledAppointment</Text>
+                    <Text style={{ marginLeft: 50, fontWeight: 'bold', color: 'black' }}>ReScheduledAppointment</Text>
                 </View>
 
                 <ScrollView>
                     {loading ? <View style={{ justifyContent: 'center', alignItems: 'center', marginVertical: 50 }}><ActivityIndicator size="large" color="skyblue" /></View> : <View style={{ marginHorizontal: 15 }}>
-                        <Text style={{ fontSize: 18, fontWeight: '600', marginVertical: 7 }}>
+                        <Text style={{ fontSize: 18, fontWeight: '600', marginVertical: 7, color: 'black' }}>
                             Appointment Type
                         </Text>
                         <View style={{ flexDirection: 'row' }}>
@@ -222,7 +222,7 @@ const ReScheduledAppointment = ({ navigation, route }) => {
                             <HeaderButton name='online' activeTab={appointmentType} setActiveTab={setappointmentType} />
                         </View>
 
-                        <Text style={{ fontWeight: '600', fontSize: 18, marginTop: 10 }}>
+                        <Text style={{ fontWeight: '600', fontSize: 18, marginTop: 10, color: 'black' }}>
                             Select Date
                         </Text>
 
@@ -244,7 +244,7 @@ const ReScheduledAppointment = ({ navigation, route }) => {
 
                         />
 
-                        <Text style={{ fontSize: 18, fontWeight: '600', marginVertical: 8 }}>
+                        <Text style={{ fontSize: 18, fontWeight: '600', marginVertical: 8, color: 'black' }}>
                             Time Slot
                         </Text>
                         <FlatList
@@ -258,7 +258,7 @@ const ReScheduledAppointment = ({ navigation, route }) => {
 
                         />
                         <View style={{ marginTop: 10 }}>
-                            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>
+                            <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'black' }}>
                                 Reason for Schedule Change
                             </Text>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -323,10 +323,23 @@ const ReScheduledAppointment = ({ navigation, route }) => {
                                         <EvilIcons name="close-o" size={28} color="black" style={{ marginLeft: 210 }} />
                                         <Image source={require('../assets/re.png')}></Image>
                                         <View style={{ width: '70%', flexDirection: 'column', alignItems: 'center', marginVertical: 10 }}>
-                                            <Text style={{ fontSize: 20, fontWeight: '500' }}> Appointment  </Text>
-                                            <Text style={{ fontSize: 20, fontWeight: '500' }}> Rescheduled </Text>
+                                            <Text style={{ fontSize: 20, fontWeight: '500', color: 'black' }}> Appointment  </Text>
+                                            <Text style={{ fontSize: 20, fontWeight: '500', color: 'black' }}> Rescheduled </Text>
                                         </View>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    setModalVisible(false)
+                                                    navigation.navigate("AppointmentScreen")
+                                                }}
+                                                style={{ width: '90%', backgroundColor: 'rgba(65, 140, 253, 1)', padding: 9, borderRadius: 25 }}
+                                            >
+                                                <Text style={{ color: 'white', fontSize: 16, marginLeft: 5 }}>
+                                                    Back to Appointments
+                                                </Text>
+
+
+                                            </TouchableOpacity>
 
                                         </View>
                                     </View>
@@ -354,7 +367,8 @@ const styles = StyleSheet.create({
     },
     reasonText: {
         fontSize: 13,
-        fontWeight: 500
+        fontWeight: 500,
+        color: 'black'
     }, modalContainer: {
         flex: 1,
         justifyContent: 'center',

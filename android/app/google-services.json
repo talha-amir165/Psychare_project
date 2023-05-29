@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "224548213622",
+    "project_id": "notifications-7e719",
+    "storage_bucket": "notifications-7e719.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:224548213622:android:27e5dc81a94c89f922a057",
+        "android_client_info": {
+          "package_name": "com.psychare_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD78xQhbrQfQGvwVwDA6kdTY0H67ABHZpI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

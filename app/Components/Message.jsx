@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     message: {
         flexDirection: 'column',
         marginTop: 20,
+        marginHorizontal: 20
     },
     messageTop: {
         flexDirection: 'row',
@@ -55,6 +56,6 @@ const styles = StyleSheet.create({
     },
     ownMessageText: {
         backgroundColor: 'rgb(245, 241, 241)',
-        color: 'black',
+        color: 'white',
     },
 });

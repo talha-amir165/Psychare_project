@@ -1,15 +1,15 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { View, ScrollView, Text, Button, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import { Bubble, GiftedChat, Send } from 'react-native-gifted-chat';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+
+
 import socket from '../Hooks/socket';
-import chatService from "../services/ChatService";
+
 import messageService from '../services/MessageService';
 import { useSelector } from 'react-redux';
 import Message from '../Components/Message';
-import { io } from "socket.io-client";
+
 
 
 const Chat = ({ route }) => {
@@ -25,9 +25,10 @@ const Chat = ({ route }) => {
     const scrollRef = useRef();
 
 
+
+
     useEffect(() => {
-
-
+        //   socket.current = io("ws://localhost:4000/");
         socketRef.current.on("getMessage", (data) => {
             setArrivalMessage({
                 sender: data.senderId,
@@ -35,7 +36,9 @@ const Chat = ({ route }) => {
                 createdAt: Date.now(),
             });
         });
+
     }, []);
+
     useEffect(() => {
         arrivalMessage &&
             conversation?.members.includes(arrivalMessage.sender) &&
@@ -103,7 +106,7 @@ const Chat = ({ route }) => {
     return (
 
 
-        <View style={{ flex: 1, marginTop: 100 }}>
+        <View style={{ flex: 1, backgroundColor: '#F8F9FA', height: '100%' }}>
 
             <ScrollView ref={scrollRef}
                 contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
@@ -120,13 +123,14 @@ const Chat = ({ route }) => {
 
                 <View style={{ flexDirection: 'row', padding: 10 }}>
                     <TextInput
-                        style={{ flex: 1, padding: 10, borderRadius: 10, borderWidth: 0.2, marginHorizontal: 10 }}
+                        style={{ flex: 1, padding: 10, borderRadius: 10, borderWidth: 0.2, marginHorizontal: 10, color: 'black' }}
                         placeholder="Write something..."
                         value={newMessage}
                         onChangeText={setNewMessage}
+                        placeholderTextColor={'black'}
 
                     />
-                    <TouchableOpacity style={{ width: 70, height: 40, borderRadius: 5, backgroundColor: 'skyblue', alignItems: 'center', justifyContent: 'center' }} onPress={handleSubmit}>
+                    <TouchableOpacity style={{ width: 70, height: 40, borderRadius: 5, backgroundColor: '#418CFD', alignItems: 'center', justifyContent: 'center' }} onPress={handleSubmit}>
                         <Text style={{ color: 'white' }}>Send</Text>
                     </TouchableOpacity>
                 </View>
